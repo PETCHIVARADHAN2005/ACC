@@ -1,0 +1,69 @@
+/* Form Styling */
+.add_doc {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Heading */
+.add_doc h1 {
+  text-align: center;
+  font-size: 22px;
+  color: #0056b3;
+  margin-bottom: 10px;
+}
+
+/* Label Styling */
+.add_doc label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Input Fields */
+.add_doc input {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+/* Input Focus Effect */
+.add_doc input:focus {
+  border-color: #007bff; /* Blue border on focus */
+  outline: none;
+  background-color: #f9f9f9;
+}
+
+/* Submit Button */
+.add_doc button {
+  background-color: #007bff; /* Blue color */
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Button Hover Effect */
+.add_doc button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 450px) {
+  .add_doc {
+      width: 90%;
+  }
+}

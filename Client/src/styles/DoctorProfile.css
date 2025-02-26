@@ -1,0 +1,835 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Main layout styles */
+.doctor_profile {
+  display: flex;
+  gap: 24px;
+  padding: 20px 20px 20px 290px;
+  margin-top: 60px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 60px);
+}
+
+/* Header styles */
+.doctor_header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: #5f6fff;
+  padding: 0 24px;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.doctor_header img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.doctor_header h1 {
+  margin: 0;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Sidebar styles */
+.doc_prof_sidebar {
+  position: fixed;
+  left: 20px;
+  top: 80px;
+  width: 250px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.doc_prof_sidebar img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.doc_prof_sidebar h1 {
+  font-size: 1.5rem;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.doc_prof_sidebar h2 {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 12px 0;
+}
+
+.doc_prof_sidebar p {
+  font-size: 0.9rem;
+  color: #777;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Form styles */
+.doc_up_form {
+  flex: 1;
+  min-width: 0;
+}
+
+.update_doc_profile {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+/* Update button styles */
+.update_button {
+  margin-bottom: 24px;
+}
+
+.update_button button {
+  background-color: #5f6fff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.update_button button:hover {
+  background-color: #4b57cc;
+}
+
+/* Menu styles */
+.profile_menu {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.profile_menu button {
+  background: none;
+  border: 1px solid #5f6fff;
+  color: #5f6fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.profile_menu button.active {
+  background: #5f6fff;
+  color: white;
+}
+
+
+.doc_details_con{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.doc_details_con h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.details_section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.details_section h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.details_section h4 {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+/* Form input styles */
+.simple_flex {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.simple_flex label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.simple_flex input,
+.simple_flex select,
+.simple_flex textarea {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.simple_flex textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.flex_input {
+  display: flex;
+  gap: 20px;
+}
+
+.flex_input .simple_flex {
+  flex: 1;
+}
+
+/* Radio button styles */
+.radio_flex {
+  margin-bottom: 16px;
+}
+
+.radio_flex label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.radio_flex-in {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.radio_flex-in input[type="radio"] {
+  margin-right: 4px;
+}
+
+.radio_flex-in label {
+  font-weight: normal;
+}
+
+
+/* Add more button styles */
+.add_more_button {
+  margin-top: 20px;
+}
+
+.add_more_button button {
+  background: none;
+  border: 1px dashed #5f6fff;
+  color: #5f6fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.add_more_button button:hover {
+  background: #f0f2ff;
+}
+
+/* Custom scrollbar */
+.doc_prof_sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.doc_prof_sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.doc_prof_sidebar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.doc_prof_sidebar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .doctor_profile {
+    padding: 20px;
+    flex-direction: column;
+  }
+  
+  .doc_prof_sidebar {
+    position: static;
+    width: auto;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .flex_input {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor_profile {
+    padding: 16px;
+    margin-top: 50px;
+  }
+  
+  .doctor_header {
+    padding: 0 16px;
+    height: 50px;
+  }
+  
+  .doctor_header img {
+    height: 32px;
+  }
+  
+  .doctor_header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .doc_prof_sidebar {
+    margin-bottom: 16px;
+  }
+  
+  .update_doc_profile {
+    padding: 16px;
+  }
+  
+  .profile_menu {
+  overflow-x: scroll;
+    gap: 8px;
+  }
+  
+  .profile_menu button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .details_section {
+    padding: 16px;
+  }
+  
+  .doc_details_con h2 {
+    font-size: 1.3rem;
+  }
+  
+  .details_section h3 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .doctor_profile {
+    padding: 12px;
+  }
+  
+  .doctor_header {
+    padding: 0 12px;
+  }
+  
+  .doctor_header img {
+    height: 28px;
+  }
+  
+  .doctor_header h1 {
+    font-size: 1rem;
+  }
+  
+  .doc_prof_sidebar img {
+    height: 160px;
+  }
+  
+  .update_button button {
+    width: 100%;
+  }
+  
+  .profile_menu {
+      overflow-x:scroll   ;
+    /* flex-wrap: wrap; */
+  }
+  
+  .profile_menu button {
+    /* flex: 1; */
+    min-width: calc(50% - 4px);
+    text-align: center;
+  }
+  
+  .checkbox_group {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .simple_flex input,
+  .simple_flex select,
+  .simple_flex textarea {
+    font-size: 16px;
+  }
+  
+  .doc_details_con h2 {
+    font-size: 1.2rem;
+  }
+  
+  .details_section h3 {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
+/*Qualification section*/
+.qualification-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.add-button {
+  background-color: #ffffff;
+  color: #5f6fff;
+  border: 2px solid #5f6fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #5f6fff;
+  color: #ffffff;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.form-card {
+  background-color: #ffffff;
+  border: 1px solid #e6e9ef;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-bottom: 1px solid #e6e9ef;
+}
+
+.card-header h3 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  display: block;
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #5f6fff;
+}
+
+@media (max-width: 768px) {
+  .qualification-container {
+    padding: 16px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .qualification-container {
+    padding: 12px;
+  }
+  
+  .card-header,
+  .card-content {
+    padding: 12px;
+  }
+}
+
+
+/* Section containers */
+.specialization-container,
+.experience-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+/* Section headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.section-header h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Add button styling */
+.add-button {
+  background-color: #ffffff;
+  color: #5f6fff;
+  border: 2px solid #5f6fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #5f6fff;
+  color: #ffffff;
+}
+
+/* Cards container */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Form card styling */
+.form-card {
+  background-color: #ffffff;
+  border: 1px solid #e6e9ef;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Card header */
+.card-header {
+  background-color: #f8f9fa;
+  padding: 16px;
+  border-bottom: 1px solid #e6e9ef;
+}
+
+.card-header h3 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Card content */
+.card-content {
+  padding: 20px;
+}
+
+/* Input groups */
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  display: block;
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  outline: none;
+  border-color: #5f6fff;
+}
+
+.input-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Date group */
+.date-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Checkbox group */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.checkbox-group label {
+  color: #4a5568;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .specialization-container,
+  .experience-container {
+    padding: 16px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .date-group {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .specialization-container,
+  .experience-container {
+    padding: 12px;
+  }
+
+  .card-header,
+  .card-content {
+    padding: 12px;
+  }
+}
+/* Medical Registration Form */
+/* Main container */
+.registration-container {
+  width: 100%;
+  padding: 24px;
+  background-color: #f9fafb;
+}
+
+/* Section header */
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Cards container */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form card */
+.form-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Card header */
+.card-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Card content */
+.card-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Input groups */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #111827;
+  transition: all 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: #9ca3af;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.input-group input:hover {
+  border-color: #9ca3af;
+}
+
+/* Specific styling for number input (registration year) */
+.input-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input-group input[type="number"]::-webkit-outer-spin-button,
+.input-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .registration-container {
+    padding: 16px;
+  }
+
+  .card-header,
+  .card-content {
+    padding: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 20px;
+  }
+}
