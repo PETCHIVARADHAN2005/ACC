@@ -7,6 +7,7 @@ import PatientList from './PatientRecord';
 import ManageSlots from './DoctorSlots';
 import { useNavigate } from 'react-router-dom';
 import { DoctorContext } from '../../context/Doctorcontext';
+import DigitalPrescription from './DigitalPrescription';
  // Assuming you're using lucide-react for icons
 
 // Inside your component:
@@ -25,7 +26,7 @@ const DoctorHome = () => {
         setToken(null);
         localStorage.removeItem('doctor-token');
         // logout(); // This will clear token from localStorage and context
-        navigate('/login'); // Redirect to login page
+        navigate('/'); // Redirect to login page
     };
 
     const handleProfileClick = () => {
@@ -91,8 +92,8 @@ const DoctorHome = () => {
             {/* Header */}
             <header className="dashboard-header">
                 <div className="header-content">
-                    <div>
-                    <img src='' alt='logo'></img>
+                    <div className='logo-title'>
+                    <img src='../../../public/images/logo.png' alt='logo'></img>
                     <h1>Aruna Cardiac Care</h1>
                     </div>
                     <div className="profile-menu">
@@ -252,6 +253,17 @@ const DoctorHome = () => {
                         </div>
                         <div className="card-content">
                             <PatientList />
+                        </div>
+                    </div>
+                )}
+                {/* Patients View */}
+                {activeView === 'prescriptions' && (
+                    <div className="dashboard-card view-card">
+                        <div className="card-header">
+                            <h3 className="card-title">Digital Prescription</h3>
+                        </div>
+                        <div className="card-content">
+                            <DigitalPrescription/>
                         </div>
                     </div>
                 )}

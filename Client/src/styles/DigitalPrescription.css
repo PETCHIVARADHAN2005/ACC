@@ -1,0 +1,226 @@
+.prescription-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  color: #2c3e50;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #3498db;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-control, .form-select {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  outline: none;
+}
+
+.input-with-unit {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-unit .form-control {
+  padding-right: 3rem;
+}
+
+.unit {
+  position: absolute;
+  right: 1rem;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.medications-section {
+  margin: 2rem 0;
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.section-title {
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.medications-table {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.medications-table thead th {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+  padding: 1rem;
+  text-align: center;
+  border: none;
+}
+
+.medications-table tbody td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-color: #e2e8f0;
+}
+
+.col-num {
+  width: 50px;
+}
+
+.col-drug {
+  width: 25%;
+}
+
+.col-unit {
+  width: 15%;
+}
+
+.col-dosage {
+  width: 20%;
+}
+
+.col-timing {
+  width: 10%;
+}
+
+.timing-checkbox {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.signature-section {
+  margin: 2rem 0;
+}
+
+.signature-pad {
+  border: 2px dashed #cbd5e0;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: white;
+  margin-top: 0.5rem;
+}
+
+.signature-canvas {
+  width: 100%;
+  height: 200px;
+  background-color: white;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.btn-action {
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.btn-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prescription-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-action {
+    width: 100%;
+  }
+
+  .medications-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+.btn-action {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+  }
+  
+  .btn-action:hover {
+    opacity: 0.8;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    background-color: white;
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: white;
+  }

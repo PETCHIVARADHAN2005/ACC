@@ -9,7 +9,7 @@ const createDoctorTable = () => {
       personal_email VARCHAR(255) UNIQUE NOT NULL,
       emergency_email VARCHAR(255) UNIQUE ,
       phone_number VARCHAR(20) NOT NULL,
-      profile_image LONGBLOB,
+      profile_image TEXT,
       gender VARCHAR(20),
       dob DATE,
       blood_group VARCHAR(5),

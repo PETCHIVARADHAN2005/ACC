@@ -16,10 +16,8 @@ const App = () => {
     <div>
       <DoctorContextProvider>
       <Routes>
-        {/* <Route path='/' element={<AdminPage/>}/> */}
         <Route path='/doctor-profile' element={<DoctorProfile/>}/>
         <Route path='/' element={<DoctorLogin/>}/>
-        {/* <Route path='/' element={<DoctorHome/>}/> */}
         <Route path='/Home' element={<DoctorHome/>}/>
         <Route path='/appointments' element={<DoctorAppointment/>}/>
         <Route path='/patients-record' element={<PatientRecord/>}/>

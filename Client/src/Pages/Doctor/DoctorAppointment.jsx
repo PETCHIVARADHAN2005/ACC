@@ -2,21 +2,43 @@ import React, { useState } from 'react';
 import { Calendar, Clock, Search } from 'lucide-react';
 import '../../styles/DoctorAppointment.css';
 
-const DoctorAppointment = ({appointments}) => {
+const DoctorAppointment = ({ appointments }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [timeFilter, setTimeFilter] = useState('all'); // 'all', 'upcoming', 'today', 'previous'
 
-  // Sample appointments data - removed type and status
+  // Get today's date at midnight for comparison
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Filter appointments based on time period
+  const filterAppointmentsByTime = (appointments) => {
+    return appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      appointmentDate.setHours(0, 0, 0, 0);
+
+      switch (timeFilter) {
+        case 'upcoming':
+          return appointmentDate > today;
+        case 'today':
+          return appointmentDate.getTime() === today.getTime();
+        case 'previous':
+          return appointmentDate < today;
+        default:
+          return true;
+      }
+    });
+  };
 
   // Group appointments by date
-  const groupedAppointments = appointments.reduce((groups, appointment) => {
+  const groupedAppointments = filterAppointmentsByTime(appointments).reduce((groups, appointment) => {
     const date = new Date(appointment.date);
-    const dateString = date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const dateString = date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
-    
+
     if (!groups[dateString]) {
       groups[dateString] = [];
     }
@@ -24,33 +46,88 @@ const DoctorAppointment = ({appointments}) => {
     return groups;
   }, {});
 
-  // Filter appointments by search only
-  const filteredDates = Object.entries(groupedAppointments)
+  // Convert grouped appointments to an array and sort by date in descending order
+  const sortedAppointments = Object.entries(groupedAppointments)
     .map(([date, apps]) => ({
       date,
-      appointments: apps.filter(app => 
+      timestamp: new Date(apps[0].date).getTime(),
+      appointments: apps.filter(app =>
         app.patient.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }))
-    .filter(group => group.appointments.length > 0);
+    .filter(group => group.appointments.length > 0)
+    .sort((a, b) => b.timestamp - a.timestamp);
+
+  // Get counts for filter badges
+  const getCounts = () => {
+    const counts = {
+      all: appointments.length,
+      upcoming: 0,
+      today: 0,
+      previous: 0
+    };
+
+    appointments.forEach(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      appointmentDate.setHours(0, 0, 0, 0);
+
+      if (appointmentDate > today) {
+        counts.upcoming++;
+      } else if (appointmentDate.getTime() === today.getTime()) {
+        counts.today++;
+      } else {
+        counts.previous++;
+      }
+    });
+
+    return counts;
+  };
+
+  const counts = getCounts();
 
   return (
     <div className="appointments-container">
-      {/* Search Bar */}
+      {/* Search and Filter Bar */}
       <div className="search-filters">
         <div className="search-input">
           <Search className="search-icon" />
-          <input
+          <input 
             type="text"
             placeholder="Search appointments..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
+        <div className="time-filters">
+          <button 
+            className={`filter-button ${timeFilter === 'all' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('all')}
+          >
+            All ({counts.all})
+          </button>
+          <button 
+            className={`filter-button ${timeFilter === 'upcoming' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('upcoming')}
+          >
+            Upcoming ({counts.upcoming})
+          </button>
+          <button 
+            className={`filter-button ${timeFilter === 'today' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('today')}
+          >
+            Today ({counts.today})
+          </button>
+          <button 
+            className={`filter-button ${timeFilter === 'previous' ? 'active' : ''}`}
+            onClick={() => setTimeFilter('previous')}
+          >
+            Previous ({counts.previous})
+          </button>
+        </div>
       </div>
 
       {/* Appointments List */}
-      {filteredDates.map(({ date, appointments }) => (
+      {sortedAppointments.map(({ date, appointments }) => (
         <div className="appointment-group" key={date}>
           <div className="date-header">
             <Calendar className="date-icon" />
@@ -77,7 +154,7 @@ const DoctorAppointment = ({appointments}) => {
         </div>
       ))}
 
-      {filteredDates.length === 0 && (
+      {sortedAppointments.length === 0 && (
         <div className="no-appointments">
           <p>No appointments found</p>
         </div>
