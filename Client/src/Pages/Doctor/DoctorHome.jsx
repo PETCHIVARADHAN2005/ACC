@@ -8,6 +8,7 @@ import ManageSlots from './DoctorSlots';
 import { useNavigate } from 'react-router-dom';
 import { DoctorContext } from '../../context/Doctorcontext';
 import DigitalPrescription from './DigitalPrescription';
+import DoctorDashboard from './DoctorDashboard';
  // Assuming you're using lucide-react for icons
 
 // Inside your component:
@@ -39,6 +40,9 @@ const DoctorHome = () => {
         { id: 2, patient: "Jane Smith", time: "10:30 AM", date: "2025-02-11" },
         { id: 3, patient: "Mike Johnson", time: "02:00 PM", date: "2025-02-11" },
         { id: 3, patient: "Mike ", time: "02:00 PM", date: "2025-02-17" },
+        { id: 3, patient: "Mike ", time: "02:00 PM", date: "2025-03-18" },
+        { id: 3, patient: "Mike ", time: "02:00 PM", date: "2025-03-19" },
+        { id: 3, patient: "Mike ", time: "02:00 PM", date: "2025-03-20" },
     ];
 
 
@@ -138,94 +142,16 @@ const DoctorHome = () => {
                     </div>
                 </div>
 
+                
                 {/* Dashboard View */}
                 {activeView === 'dashboard' && (
-                    <div className="dashboard-grid">
-                        {/* Calendar Card */}
-                        <div className="dashboard-card calendar-card">
-                            <div className="card-header">
-                                <div className="calendar-header">
-                                    <h3 className="card-title">Calendar</h3>
-                                    <div className="month-navigation">
-                                        <button onClick={prevMonth} className="nav-button">
-                                            <ChevronLeft />
-                                        </button>
-                                        <span className="current-month">
-                                            {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
-                                        </span>
-                                        <button onClick={nextMonth} className="nav-button">
-                                            <ChevronRight />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-content">
-                                <div className="calendar-grid">
-                                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                                        <div key={day} className="calendar-day-header">
-                                            {day}
-                                        </div>
-                                    ))}
-                                    {generateCalendarDays().map((day, index) => {
-                                        const appointments = getAppointmentsForDate(day);
-                                        return (
-                                            <div
-                                                key={index}
-                                                className={`calendar-day ${day ? 'has-date' : ''}`}
-                                            >
-                                                {day && (
-                                                    <>
-                                                        <div className="day-number">{day}</div>
-                                                        {appointments.length > 0 && (
-                                                            <div className="appointment-badge">
-                                                                {appointments.length} appt{appointments.length !== 1 ? 's' : ''}
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                    <div className="dashboard-card view-card">
+                        <div className="card-header">
+                            <h3 className="card-title">Appointments</h3>
                         </div>
-
-                        {/* Today's Appointments */}
-                        <div className="dashboard-card appointments-card">
-                            <div className="card-header">
-                                <h3 className="card-title">Today's Appointments</h3>
-                            </div>
-                            <div className="card-content">
-                                <div className="appointments-list">
-                                    {appointments
-                                        .filter(apt => {
-                                            const aptDate = new Date(apt.date);
-                                            const today = new Date();
-                                            return aptDate.getFullYear() === today.getFullYear() &&
-                                                aptDate.getMonth() === today.getMonth() &&
-                                                aptDate.getDate() === today.getDate();
-                                        })
-                                        .map(apt => (
-                                            <div key={apt.id} className="appointment-item">
-                                                <div className="appointment-info">
-                                                    <p className="patient-name">{apt.patient}</p>
-                                                    <p className="appointment-time">{apt.time}</p>
-                                                </div>
-                                                <button className="view-button">
-                                                    View
-                                                </button>
-                                            </div>
-                                        ))}
-                                    {appointments.filter(apt => {
-                                        const aptDate = new Date(apt.date);
-                                        const today = new Date();
-                                        return aptDate.getFullYear() === today.getFullYear() &&
-                                            aptDate.getMonth() === today.getMonth() &&
-                                            aptDate.getDate() === today.getDate();
-                                    }).length === 0 && (
-                                            <p className="text-gray-500 text-center py-4">No appointments scheduled for today</p>
-                                        )}
-                                </div>
+                        <div className="card-content">
+                            <div className="view-content">
+                                <DoctorDashboard/>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@ import { addExperience, addQualification, addRegistration, addSpecialization, de
 import authdoctor from '../Middlewares/authDoctor.js';
 import upload from '../Middlewares/multer.js';
 const doctorrouter=express.Router();
-doctorrouter.put('/update-personal',upload.single('image'),authdoctor,updatePersonal);
+doctorrouter.put('/update-personal',upload.single('profileImage'),authdoctor,updatePersonal);
 doctorrouter.post('/login-doctor',loginDoctor);
 doctorrouter.get('/profile',authdoctor,getDoctorProfile);
 doctorrouter.post('/add-experience', authdoctor, addExperience);

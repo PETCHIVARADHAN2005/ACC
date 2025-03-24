@@ -81,7 +81,9 @@ const DoctorProfile = () => {
   }, [token]);
 
   // Personal Info Handlers
+    
   const handlePersonalSubmit = async () => {
+    console.log("handlePersonalSubmit called");
     try {
       const formData = new FormData();
       Object.keys(doctorData.personal).forEach(key => {
@@ -91,7 +93,7 @@ const DoctorProfile = () => {
           formData.append(key, doctorData.personal[key]);
         }
       });
-
+      console.log(formData);
       const response = await axios.put(
         "http://localhost:4000/api/doctor/update-personal",
         formData,
@@ -308,43 +310,6 @@ const DoctorProfile = () => {
       console.error("Error saving item:", error);
     }
   };
-  // const saveEditedItem = async () => {
-  //   if (!currentEditItem) return;
-  //   try {
-  //     switch (editType) {
-  //       case "qualification":
-  //         await handleQualificationSubmit(currentEditItem, currentEditItem.id ? true : false);
-  //         break;
-  //       case "specialization":
-  //         await handleSpecializationSubmit(currentEditItem, currentEditItem.id ? true : false);
-  //         break;
-  //       case "experience":
-  //         await handleExperienceSubmit(currentEditItem, currentEditItem.id ? true : false);
-  //         break;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving item:", error);
-  //   }
-  // };
-  // For editing existing items
-// const saveEditedItem = async () => {
-//   if (!currentEditItem) return;
-//   try {
-//     const method = currentEditItem.id ? 'put' : 'post';
-//     const endpoint = `http://localhost:4000/api/doctor/${method === 'put' ? 'update' : 'add'}-${editType}`;
-    
-//     const response = await axios[method](endpoint, currentEditItem, {
-//       headers: { Authorization: `Bearer ${token}` }
-//     });
-
-//     if (response.data.success) {
-//       closeEditModal();
-//       fetchDoctorProfile();
-//     }
-//   } catch (error) {
-//     console.error(`Error saving ${editType}:`, error);
-//   }
-// };
   
   // Add these before return statement
 
@@ -624,7 +589,7 @@ return (
                     <input
                       type="text"
                       id="blood_group"
-                      value={doctorData.personal.blood_group|| " "}
+                      value={doctorData.personal.blood_group!==null? doctorData.personal.blood_group : ""}
                       onChange={(e) => handlePersonalDataChange("blood_group", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -634,7 +599,7 @@ return (
                     <input
                       type="text"
                       id="aadhar_number"
-                      value={doctorData.personal.aadhar_number||" "}
+                      value={doctorData.personal.aadhar_number!==null? doctorData.personal.aadhar_number : ""}  
                       onChange={(e) => handlePersonalDataChange("aadhar_number", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -649,7 +614,7 @@ return (
                     <input
                       type="text"
                       id="phone_number"
-                      value={doctorData.personal.phone_number||" "}
+                      value={doctorData.personal.phone_number!==null? doctorData.personal.phone_number : ""}
                       onChange={(e) => handlePersonalDataChange("phone_number", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -659,7 +624,7 @@ return (
                     <input
                       type="text"
                       id="emergency_phone"
-                      value={doctorData.personal.emergency_phone||" "}
+                      value={doctorData.personal.emergency_phone!==null? doctorData.personal.emergency_phone : ""}
                       onChange={(e) => handlePersonalDataChange("emergency_phone", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -669,7 +634,7 @@ return (
                     <input
                       type="email"
                       id="personal_email"
-                      value={doctorData.personal.personal_email||" "}
+                      value={doctorData.personal.personal_email!==null? doctorData.personal.personal_email : ""}
                       onChange={(e) => handlePersonalDataChange("personal_email", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -679,7 +644,7 @@ return (
                     <input
                       type="email"
                       id="emergency_email"
-                      value={doctorData.personal.emergency_email||" "}
+                      value={doctorData.personal.emergency_email!==null? doctorData.personal.emergency_email : ""}
                       onChange={(e) => handlePersonalDataChange("emergency_email", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -693,7 +658,7 @@ return (
                     <label htmlFor="permanent_address_country">Country</label>
                     <select
                       id="permanent_address_country"
-                      value={doctorData.personal.permanent_address_country||" "}
+                      value={doctorData.personal.permanent_address_country!==null ? doctorData.personal.permanent_address_country : ""}
                       onChange={(e) => handlePersonalDataChange("permanent_address_country", e.target.value)}
                       disabled={!editingPersonal}
                     >
@@ -705,7 +670,7 @@ return (
                     <label htmlFor="permanent_address_state">State</label>
                     <select
                       id="permanent_address_state"
-                      value={doctorData.personal.permanent_address_state||" "}
+                      value={doctorData.personal.permanent_address_state!==null ? doctorData.personal.permanent_address_state : ""}
                       onChange={(e) => handlePersonalDataChange("permanent_address_state", e.target.value)}
                       disabled={!editingPersonal}
                     >
@@ -717,7 +682,7 @@ return (
                     <label htmlFor="permanent_address_district">District</label>
                     <select
                       id="permanent_address_district"
-                      value={doctorData.personal.permanent_address_district||" "}
+                      value={doctorData.personal.permanent_address_district!==null ? doctorData.personal.permanent_address_district : ""}
                       onChange={(e) => handlePersonalDataChange("permanent_address_district", e.target.value)}
                       disabled={!editingPersonal}
                     >
@@ -730,7 +695,7 @@ return (
                     <input
                       type="text"
                       id="permanent_address_pincode"
-                      value={doctorData.personal.permanent_address_pincode||" "}
+                      value={doctorData.personal.permanent_address_pincode!==null ? doctorData.personal.permanent_address_pincode : ""}
                       onChange={(e) => handlePersonalDataChange("permanent_address_pincode", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -740,7 +705,7 @@ return (
                     <input
                       type="text"
                       id="permanent_address_line"
-                      value={doctorData.personal.permanent_address_line||" "}
+                      value={doctorData.personal.permanent_address_line!==null ? doctorData.personal.permanent_address_line : ""}
                       onChange={(e) => handlePersonalDataChange("permanent_address_line", e.target.value)}
                       placeholder="Door No , Street Name , Town"
                       disabled={!editingPersonal}
@@ -755,7 +720,7 @@ return (
                     <label htmlFor="current_address_country">Country</label>
                     <select
                       id="current_address_country"
-                      value={doctorData.personal.current_address_country||" "}
+                      value={doctorData.personal.current_address_country!==null ? doctorData.personal.current_address_country : ""}
                       onChange={(e) => handlePersonalDataChange("current_address_country", e.target.value)}
                       disabled={!editingPersonal}
                     >
@@ -767,7 +732,7 @@ return (
                     <label htmlFor="current_address_state">State</label>
                     <select
                       id="current_address_state"
-                      value={doctorData.personal.current_address_state||" "}
+                      value={doctorData.personal.current_address_state!==null ? doctorData.personal.current_address_state : ""}
                       onChange={(e) => handlePersonalDataChange("current_address_state", e.target.value)}
                       disabled={!editingPersonal}
                     >
@@ -779,7 +744,7 @@ return (
                     <label htmlFor="current_address_district">District</label>
                     <select
                       id="current_address_district"
-                      value={doctorData.personal.current_address_district||" "}
+                      value={doctorData.personal.current_address_district!==null ? doctorData.personal.current_address_district : ""} 
                       onChange={(e) => handlePersonalDataChange("current_address_district", e.target.value)}
                       disabled={!editingPersonal}
                     >
@@ -792,7 +757,7 @@ return (
                     <input
                       type="text"
                       id="current_address_pincode"
-                      value={doctorData.personal.current_address_pincode||" "}
+                    value={doctorData.personal.current_address_pincode!==null ? doctorData.personal.current_address_pincode : ""}
                       onChange={(e) => handlePersonalDataChange("current_address_pincode", e.target.value)}
                       disabled={!editingPersonal}
                     />
@@ -802,7 +767,7 @@ return (
                     <input
                       type="text"
                       id="current_address_line"
-                      value={doctorData.personal.current_address_line||" "}
+                      value={doctorData.personal.current_address_line!==null ? doctorData.personal.current_address_line : ""}
                       onChange={(e) => handlePersonalDataChange("current_address_line", e.target.value)}
                       placeholder="Door No , Street Name , Town"
                       disabled={!editingPersonal}
@@ -827,7 +792,7 @@ return (
                 </div>
 
                 <table className="data-table">
-                  <thead>
+                  <thead >
                     <tr>
                       <th>Degree</th>
                       <th>University</th>
@@ -841,7 +806,7 @@ return (
                         <td>{qual.degree}</td>
                         <td>{qual.university}</td>
                         <td>{qual.year}</td>
-                        <td className="action-buttons">
+                        <td >
                           <button
                             type="button"
                             onClick={() => openEditModal("qualification", qual)}
@@ -881,15 +846,15 @@ return (
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Specialization</th>
-                      <th>Actions</th>
+                      <th >Specialization</th>
+                      <th >Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {doctorData.specializations.map((spec) => (
                       <tr key={spec.specialization_id}>
                         <td>{spec.specialization_name}</td>
-                        <td className="action-buttons">
+                        <td >
                             <button
                               type="button"
                               onClick={() => openEditModal("specialization", spec)}
@@ -943,7 +908,7 @@ return (
                           <td>{exp.position}</td>
                           <td>{exp.start_year}</td>
                           <td>{exp.end_year}</td>
-                          <td className="action-buttons">
+                          <td>
                             <button
                               type="button"
                               onClick={() => openEditModal("experience", exp)}
