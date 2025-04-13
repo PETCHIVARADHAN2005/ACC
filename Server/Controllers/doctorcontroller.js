@@ -382,4 +382,323 @@ const getDoctorProfile = async (req, res) => {
   }
 };
 
-export { loginDoctor, getDoctorProfile, addQualification, updateQualification, addSpecialization, updateSpecialization, addExperience, updateExperience, addRegistration, updateRegistration,updatePersonal,deleteExperience,deleteQualification,deleteSpecialization};
+// Add a new slot
+const addSlot = (req, res) => {
+  console.log("Add slot endpoint called", req.body);
+  const { doctor_id, slot_date, start_time, end_time } = req.body;
+
+  // Validate date (today to 10 days from now)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 10);
+  const slotDate = new Date(slot_date);
+
+  if (slotDate < today || slotDate > maxDate) {
+    return res.status(400).json({
+      success: false,
+      error: "Slot date must be between today and 10 days from now"
+    });
+  }
+
+  const query = `
+    INSERT INTO DoctorSlots (doctor_id, slot_date, start_time, end_time)
+    VALUES (?, ?, ?, ?)
+  `;
+  connection.query(query, [doctor_id, slot_date, start_time, end_time], handleResponse(res, "Slot added"));
+};
+
+// Edit an existing slot
+const updateSlot = (req, res) => {
+  console.log("Update slot endpoint called", req.body);
+  const { slot_date, start_time, end_time } = req.body;
+  const slot_id = req.params.slotId;
+  console.log("Received slot_id:", slot_id);
+  // Validate date (today to 10 days from now)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 10);
+  const slotDate = new Date(slot_date);
+
+  if (slotDate < today || slotDate > maxDate) {
+    return res.status(400).json({
+      success: false,
+      error: "Slot date must be between today and 10 days from now"
+    });
+  }
+
+  const query = `
+    UPDATE DoctorSlots 
+    SET slot_date = ?, start_time = ?, end_time = ?, updated_at = NOW()
+    WHERE slot_id = ?
+  `;
+  connection.query(query, [slot_date, start_time, end_time, slot_id], handleResponse(res, "Slot updated"));
+};
+
+const deleteSlot = (req, res) => {
+  console.log("Delete slot endpoint called", req.params);
+  const slot_id = req.params.slotId;
+  
+  // Check if slot_id is provided
+  if (!slot_id) {
+    return res.status(400).json({
+      success: false,
+      error: "Slot ID is required"
+    });
+  }
+
+  const query = `
+    DELETE FROM DoctorSlots 
+    WHERE slot_id = ?
+  `;
+  
+  connection.query(query, [slot_id], (err, result) => {
+    if (err) {
+      console.error("Error deleting slot:", err);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to delete slot",
+        details: err.message
+      });
+    }
+    
+    // Check if any rows were affected
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "No slot found with the provided ID"
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: "Slot deleted successfully",
+      affectedRows: result.affectedRows
+    });
+  });
+};
+
+
+// Get all slots for a doctor (for completeness, aligns with frontend)
+const getSlotsByDoctor = (req, res) => {
+  console.log("Get slots endpoint called", req.body);
+  const doctor_id = req.body.doctor_id;
+
+  const query = `
+    SELECT * FROM DoctorSlots 
+    WHERE doctor_id = ? AND slot_date >= CURDATE() 
+    ORDER BY slot_date, start_time
+  `;
+  connection.query(query, [doctor_id], (err, results) => {
+    if (err) {
+      console.error("Error fetching slots:", err);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to fetch slots"
+      });
+    }
+    return res.status(200).json(results);
+  });
+};
+// Get all patients for the logged-in doctor 😊
+const getDoctorPatients = async (req, res) => {
+  try {
+    // Get doctor_id from authenticated user
+    const doctor_id = req.doctor_id || req.body.doctor_id;
+    console.log("Fetching patients for doctor:", doctor_id);
+    
+    // Query to get all patients who have appointments with this doctor
+    const query = `
+      SELECT DISTINCT p.*, 
+        MAX(CASE WHEN a.appointment_date < CURDATE() THEN a.appointment_date END) as last_appointment,
+        MIN(CASE WHEN a.appointment_date >= CURDATE() THEN a.appointment_date END) as next_appointment
+      FROM Patient p
+      JOIN Appointment a ON p.patient_id = a.patient_id
+      WHERE a.doctor_id = ?
+      GROUP BY p.patient_id
+      ORDER BY next_appointment ASC, last_appointment DESC
+    `;
+    
+    const [patients] = await new Promise((resolve, reject) => {
+      connection.query(query, [doctor_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    console.log(`Found ${patients.length} patients for doctor ${doctor_id}`);
+    res.status(200).json(patients);
+  } catch (error) {
+    console.error('Error fetching doctor patients:', error);
+    res.status(500).json({ message: 'Failed to fetch patients' });
+  }
+};
+
+const getPatientDetails = async (req, res) => {
+  try {
+    const doctor_id = req.doctor_id || req.body.doctor_id;
+    const patient_id = req.params.patient_id;
+    
+    console.log(`Fetching details for patient ${patient_id} for doctor ${doctor_id}`);
+    
+    // First verify this patient has appointments with this doctor
+    const verifyQuery = `
+      SELECT COUNT(*) as count 
+      FROM Appointment 
+      WHERE doctor_id = ? AND patient_id = ?
+    `;
+    
+    const [verification] = await new Promise((resolve, reject) => {
+      connection.query(verifyQuery, [doctor_id, patient_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    if (!verification[0] || verification[0].count === 0) {
+      return res.status(403).json({ message: 'You do not have access to this patient' });
+    }
+    
+    // Get patient details
+    const patientQuery = `SELECT * FROM Patient WHERE patient_id = ?`;
+    
+    const [patient] = await new Promise((resolve, reject) => {
+      connection.query(patientQuery, [patient_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    if (!patient || patient.length === 0) {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+    
+    // Get patient appointments with this doctor
+    const appointmentsQuery = `
+      SELECT * FROM Appointment
+      WHERE doctor_id = ? AND patient_id = ?
+      ORDER BY appointment_date DESC, start_time DESC
+    `;
+    
+    const [appointments] = await new Promise((resolve, reject) => {
+      connection.query(appointmentsQuery, [doctor_id, patient_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    // Combine patient details with appointments
+    const patientWithAppointments = {
+      ...patient[0],
+      appointments: appointments
+    };
+    
+    console.log(`Successfully fetched details for patient ${patient_id}`);
+    res.status(200).json(patientWithAppointments);
+  } catch (error) {
+    console.error('Error fetching patient details:', error);
+    res.status(500).json({ message: 'Failed to fetch patient details' });
+  }
+};
+const getDoctorDashboard = async (req, res) => {
+  try {
+    // Get doctor_id from authenticated user
+    const doctor_id = req.doctor_id || req.body.doctor_id;
+    console.log("Fetching dashboard data for doctor:", doctor_id);
+    
+    // Get doctor's name
+    const doctorNameQuery = `
+      SELECT first_name, last_name
+      FROM Doctor
+      WHERE doctor_id = ?
+    `;
+    
+    // Get total patients count
+    const patientsCountQuery = `
+      SELECT COUNT(DISTINCT patient_id) as total_patients
+      FROM Appointment
+      WHERE doctor_id = ?
+    `;
+    
+    // Get total appointments count
+    const appointmentsCountQuery = `
+      SELECT COUNT(*) as total_appointments
+      FROM Appointment
+      WHERE doctor_id = ?
+    `;
+    
+    // Get today's appointments
+    const todayAppointmentsQuery = `
+      SELECT a.*, p.first_name, p.last_name, p.phone_number
+      FROM Appointment a
+      JOIN Patient p ON a.patient_id = p.patient_id
+      WHERE a.doctor_id = ? AND a.appointment_date = CURDATE()
+      ORDER BY a.start_time ASC
+    `;
+    
+    // Get recent 5 appointments
+    const recentAppointmentsQuery = `
+      SELECT a.*, p.first_name, p.last_name, p.phone_number
+      FROM Appointment a
+      JOIN Patient p ON a.patient_id = p.patient_id
+      WHERE a.doctor_id = ?
+      ORDER BY a.appointment_date DESC, a.start_time DESC
+      LIMIT 5
+    `;
+    
+    // Execute all queries
+    const [doctorInfo] = await new Promise((resolve, reject) => {
+      connection.query(doctorNameQuery, [doctor_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    const [patientsCount] = await new Promise((resolve, reject) => {
+      connection.query(patientsCountQuery, [doctor_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    const [appointmentsCount] = await new Promise((resolve, reject) => {
+      connection.query(appointmentsCountQuery, [doctor_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    const [todayAppointments] = await new Promise((resolve, reject) => {
+      connection.query(todayAppointmentsQuery, [doctor_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    const [recentAppointments] = await new Promise((resolve, reject) => {
+      connection.query(recentAppointmentsQuery, [doctor_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    // Combine all data
+    const dashboardData = {
+      doctor_name: doctorInfo[0] ? `${doctorInfo[0].first_name} ${doctorInfo[0].last_name}` : '',
+      total_patients: patientsCount[0]?.total_patients || 0,
+      total_appointments: appointmentsCount[0]?.total_appointments || 0,
+      today_appointments: todayAppointments || [],
+      recent_appointments: recentAppointments || []
+    };
+    
+    res.status(200).json(dashboardData);
+  } catch (error) {
+    console.error('Error fetching doctor dashboard data:', error);
+    res.status(500).json({ message: 'Failed to fetch dashboard data' });
+  }
+};
+
+
+
+export { loginDoctor, getDoctorProfile, addQualification, updateQualification, addSpecialization, updateSpecialization, addExperience, updateExperience, addRegistration, updateRegistration,updatePersonal,deleteExperience,deleteQualification,deleteSpecialization,addSlot,deleteSlot,updateSlot,getSlotsByDoctor,getDoctorPatients,getPatientDetails,getDoctorDashboard};

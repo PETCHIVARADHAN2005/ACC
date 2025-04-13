@@ -4,6 +4,7 @@ import adminrouter from './routes/adminroute.js';
 import doctorrouter from './routes/doctorroute.js';
 import connectCloudinary from './config/cloudinary.js';
 import cors from 'cors';
+import Patientrouter from './routes/Patientroute.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 // // Routes
 app.use('/api/doctor', doctorrouter);
 app.use('/api/admin',adminrouter);
+app.use('/api/patient',Patientrouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

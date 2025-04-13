@@ -1,5 +1,5 @@
 import express from 'express';
-import { addExperience, addQualification, addRegistration, addSpecialization, deleteExperience, deleteQualification, deleteSpecialization, getDoctorProfile, loginDoctor, updateExperience, updatePersonal, updateQualification, updateRegistration, updateSpecialization } from '../Controllers/doctorcontroller.js'; 
+import { addExperience, addQualification, addRegistration, addSlot, addSpecialization, deleteExperience, deleteQualification, deleteSlot, deleteSpecialization, getDoctorDashboard, getDoctorPatients, getDoctorProfile, getPatientDetails, getSlotsByDoctor, loginDoctor, updateExperience, updatePersonal, updateQualification, updateRegistration, updateSlot, updateSpecialization } from '../Controllers/doctorcontroller.js'; 
 import authdoctor from '../Middlewares/authDoctor.js';
 import upload from '../Middlewares/multer.js';
 const doctorrouter=express.Router();
@@ -16,7 +16,12 @@ doctorrouter.put('/update-qualification', authdoctor, updateQualification);
 doctorrouter.delete('/delete-qualification/:qualificationId', authdoctor, deleteQualification);
 doctorrouter.post('/add-specialization', authdoctor, addSpecialization);
 doctorrouter.put('/update-specialization', authdoctor, updateSpecialization);
-doctorrouter.delete('/delete-specialization/:specializationId', authdoctor, deleteSpecialization)
-
-
+doctorrouter.delete('/delete-specialization/:specializationId', authdoctor, deleteSpecialization);
+doctorrouter.get('/get-slots', authdoctor, getSlotsByDoctor);
+doctorrouter.post('/add-slot', authdoctor,addSlot);
+doctorrouter.put('/update-slot/:slotId', authdoctor, updateSlot);
+doctorrouter.delete('/delete-slot/:slotId', authdoctor, deleteSlot);
+doctorrouter.get('/get-patients', authdoctor, getDoctorPatients);
+doctorrouter.get('/get-patient-details/:patient_id', authdoctor, getPatientDetails);
+doctorrouter.get('/get-doctor-dashboard', authdoctor, getDoctorDashboard);
 export default doctorrouter;

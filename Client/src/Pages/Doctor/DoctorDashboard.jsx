@@ -1,286 +1,211 @@
-import React, { useState } from 'react';
-import { Users, Activity, Clipboard, Clock, FileText, Settings, Heart, AlertTriangle, Plus } from 'lucide-react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Users, Calendar, Clock, User, ChevronRight } from 'lucide-react';
+import axios from 'axios';
+import { DoctorContext } from '../../context/Doctorcontext';
+import { Link } from 'react-router-dom';
 import '../../styles/DoctorDashboard.css';
 
 const DoctorDashboard = () => {
-  // Sample data - replace with your actual data source
-  const [patientStats, setPatientStats] = useState({
-    totalPatients: 248,
-    newPatientsThisMonth: 12,
-    upcomingAppointments: 8,
-    pendingReports: 5
+  const { backendUrl, token } = useContext(DoctorContext);
+  const [dashboardData, setDashboardData] = useState({
+    total_patients: 0,
+    total_appointments: 0,
+    today_appointments: [],
+    recent_appointments: []
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // const doctorData = JSON.parse(localStorage.getItem('doctor-data')) || {};
 
-  const [recentAlerts, setRecentAlerts] = useState([
-    { id: 1, type: 'critical', patient: 'Emily Davis', message: 'Abnormal test results', time: '2 hours ago' },
-    { id: 2, type: 'warning', patient: 'James Wilson', message: 'Missed follow-up appointment', time: '5 hours ago' },
-    { id: 3, type: 'info', patient: 'Sarah Johnson', message: 'Prescription renewal', time: '1 day ago' }
-  ]);
-
-  const [keyMetrics, setKeyMetrics] = useState([
-    { id: 1, name: 'Patient Satisfaction', value: '92%', trend: 'up' },
-    { id: 2, name: 'Avg. Consultation Time', value: '18 min', trend: 'neutral' },
-    { id: 3, name: 'Referral Rate', value: '15%', trend: 'up' },
-    { id: 4, name: 'Follow-up Compliance', value: '78%', trend: 'down' }
-  ]);
-
-  // Task list with completed status
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'Review lab results - James Wilson', due: 'Due Today', completed: false },
-    { id: 2, title: 'Complete medical report - Sarah Johnson', due: 'Due Tomorrow', completed: false },
-    { id: 3, title: 'Follow-up call - Emily Davis', due: 'Due Mar 10', completed: false },
-    { id: 4, title: 'Sign off on prescriptions', due: 'Due Mar 12', completed: false }
-  ]);
-
-  // State for new task form
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskDue, setNewTaskDue] = useState('');
-  const [showTaskForm, setShowTaskForm] = useState(false);
-
-  // Function to handle task checkbox change
-  const handleTaskCheck = (taskId) => {
-    // Filter out the checked task
-    const updatedTasks = tasks.filter(task => task.id !== taskId);
-    setTasks(updatedTasks);
-  };
-
-  // Function to add a new task
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    if (newTaskTitle.trim() === '') return;
-    
-    const newTask = {
-      id: Date.now(), // Use timestamp as a simple unique ID
-      title: newTaskTitle,
-      due: newTaskDue ? `Due ${newTaskDue}` : 'No due date',
-      completed: false
+  // Fetch dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        
+        const response = await axios.get(`${backendUrl}/api/doctor/get-doctor-dashboard`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        setDashboardData(response.data);
+        console.log(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+        setLoading(false);
+      }
     };
-    
-    setTasks([...tasks, newTask]);
-    setNewTaskTitle('');
-    setNewTaskDue('');
-    setShowTaskForm(false);
+
+    fetchDashboardData();
+  }, [backendUrl, token]);
+
+  // Format time from 24h to 12h format
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const formattedHour = hour % 12 || 12;
+    return `${formattedHour}:${minutes} ${ampm}`;
   };
 
-  const getTrendIcon = (trend) => {
-    if (trend === 'up') return <span className="trend-up">↑</span>;
-    if (trend === 'down') return <span className="trend-down">↓</span>;
-    return <span className="trend-neutral">→</span>;
+  // Format date to readable format
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
   };
+
+  if (loading) {
+    return (
+      <div className="dashboard-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
+      {error && (
+        <div className="dashboard-error">
+          <p>{error}</p>
+        </div>
+      )}
+      
+      {/* Welcome Section */}
+      <div className="dashboard-welcome">
+        <h1>Welcome, Dr. {dashboardData.doctor_name || 'Doctor'}</h1>
+        <p className="dashboard-date">
+          {new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </p>
+      </div>
       
       {/* Stats Cards */}
-      <div className="stats-container">
+      <div className="dashboard-stats">
         <div className="stat-card">
-          <div className="stat-icon icon-blue">
+          <div className="stat-icon patients-icon">
             <Users size={24} />
           </div>
           <div className="stat-content">
-            <p className="stat-label">Total Patients</p>
-            <p className="stat-value">{patientStats.totalPatients}</p>
+            <h3>Total Patients</h3>
+            <p className="stat-value">{dashboardData.total_patients}</p>
           </div>
         </div>
         
         <div className="stat-card">
-          <div className="stat-icon icon-green">
-            <Activity size={24} />
+          <div className="stat-icon appointments-icon">
+            <Calendar size={24} />
           </div>
           <div className="stat-content">
-            <p className="stat-label">New Patients</p>
-            <p className="stat-value">{patientStats.newPatientsThisMonth} this month</p>
-          </div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-icon icon-purple">
-            <Clipboard size={24} />
-          </div>
-          <div className="stat-content">
-            <p className="stat-label">Upcoming Appointments</p>
-            <p className="stat-value">{patientStats.upcomingAppointments}</p>
-          </div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-icon icon-amber">
-            <FileText size={24} />
-          </div>
-          <div className="stat-content">
-            <p className="stat-label">Pending Reports</p>
-            <p className="stat-value">{patientStats.pendingReports}</p>
+            <h3>Total Appointments</h3>
+            <p className="stat-value">{dashboardData.total_appointments}</p>
           </div>
         </div>
       </div>
       
-      <div className="main-grid">
-        {/* Quick Actions */}
-        <div className="panel quick-actions">
-          <h2 className="section-title">Quick Actions</h2>
-          <div className="action-grid">
-            <button className="action-button action-blue">
-              <Users size={24} className="action-icon" />
-              <span className="action-label">Patient Records</span>
-            </button>
-            <button className="action-button action-green">
-              <FileText size={24} className="action-icon" />
-              <span className="action-label">Write Prescription</span>
-            </button>
-            <button className="action-button action-purple">
-              <Clock size={24} className="action-icon" />
-              <span className="action-label">Schedule Follow-up</span>
-            </button>
-            <button className="action-button action-amber">
-              <Heart size={24} className="action-icon" />
-              <span className="action-label">Health Metrics</span>
-            </button>
-          </div>
+      {/* Today's Appointments */}
+      {/* <div className="dashboard-card">
+        <div className="card-header">
+          <h2>
+            <Calendar className="card-header-icon" />
+            Today's Appointments
+          </h2>
+          <Link to="/doctor/appointments" className="view-all-link">
+            View all <ChevronRight size={16} />
+          </Link>
         </div>
-      
-        {/* Alerts & Notifications */}
-        <div className="panel alerts-container">
-          <h2 className="section-title">Recent Alerts</h2>
-          <div className="alerts-list">
-            {recentAlerts.map(alert => (
-              <div key={alert.id} className={`alert-item alert-${alert.type}`}>
-                <div className={`alert-icon alert-icon-${alert.type}`}>
-                  <AlertTriangle size={18} />
+        <div className="card-content">
+          {dashboardData.today_appointments.length > 0 ? (
+            <div className="appointments-list">
+              {dashboardData.today_appointments.map((appointment, index) => (
+                <div className="appointment-item" key={appointment.appointment_id || index}>
+                  <div className="appointment-time">
+                    <Clock size={16} className="time-icon" />
+                    <span>{formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}</span>
+                  </div>
+                  <div className="appointment-details">
+                    <h3>{appointment.first_name} {appointment.last_name}</h3>
+                    <p className="appointment-type">{appointment.appointment_type || 'Consultation'}</p>
+                    {appointment.phone_number && (
+                      <p className="patient-phone">{appointment.phone_number}</p>
+                    )}
+                  </div>
+                  <div className="appointment-status">
+                    {new Date(`${appointment.appointment_date}T${appointment.start_time}`) > new Date() ? (
+                      <span className="status upcoming">Upcoming</span>
+                    ) : new Date(`${appointment.appointment_date}T${appointment.end_time}`) < new Date() ? (
+                      <span className="status completed">Completed</span>
+                    ) : (
+                      <span className="status active">In Progress</span>
+                    )}
+                  </div>
                 </div>
-                <div className="alert-content">
-                  <p className="alert-patient">{alert.patient}</p>
-                  <p className="alert-message">{alert.message}</p>
-                  <p className="alert-time">{alert.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        {/* Performance Metrics */}
-        <div className="panel metrics-container">
-          <h2 className="section-title">Performance Metrics</h2>
-          <div className="metrics-list">
-            {keyMetrics.map(metric => (
-              <div key={metric.id} className="metric-item">
-                <span className="metric-label">{metric.name}</span>
-                <div className="metric-value-container">
-                  <span className="metric-value">{metric.value}</span>
-                  {getTrendIcon(metric.trend)}
-                </div>
-              </div>
-            ))}
-          </div>
-          <button className="button button-secondary view-details">
-            View Detailed Analytics
-          </button>
-        </div>
-      </div>
-      
-      {/* Recent Patients & Tasks */}
-      <div className="bottom-grid">
-        <div className="panel table-container">
-          <div className="table-header">
-            <h2 className="section-title">Recent Patients</h2>
-            <button className="view-all">View All</button>
-          </div>
-          <div className="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  <th>Patient</th>
-                  <th>Last Visit</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>John Smith</td>
-                  <td>Mar 1, 2025</td>
-                  <td><span className="status-badge status-stable">Stable</span></td>
-                </tr>
-                <tr>
-                  <td>Sarah Johnson</td>
-                  <td>Mar 3, 2025</td>
-                  <td><span className="status-badge status-followup">Follow-up</span></td>
-                </tr>
-                <tr>
-                  <td>Michael Brown</td>
-                  <td>Mar 5, 2025</td>
-                  <td><span className="status-badge status-critical">Critical</span></td>
-                </tr>
-                <tr>
-                  <td>Emily Davis</td>
-                  <td>Mar 7, 2025</td>
-                  <td><span className="status-badge status-new">New</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        
-        <div className="panel tasks-container">
-          <div className="table-header">
-            <h2 className="section-title">Pending Tasks</h2>
-            <button 
-              className="add-task-btn" 
-              onClick={() => setShowTaskForm(!showTaskForm)}
-            >
-              <Plus size={16} />
-              {showTaskForm ? 'Cancel' : 'Add Task'}
-            </button>
-          </div>
-          
-          {/* Add Task Form */}
-          {showTaskForm && (
-            <div className="add-task-form">
-              <form onSubmit={handleAddTask}>
-                <div className="form-row">
-                  <input
-                    type="text"
-                    placeholder="Task description"
-                    value={newTaskTitle}
-                    onChange={(e) => setNewTaskTitle(e.target.value)}
-                    className="task-input"
-                    required
-                  />
-                </div>
-                <div className="form-row">
-                  <input
-                    type="text"
-                    placeholder="Due date (e.g., Today, Tomorrow, Mar 15)"
-                    value={newTaskDue}
-                    onChange={(e) => setNewTaskDue(e.target.value)}
-                    className="task-input"
-                  />
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="add-task-submit">Add Task</button>
-                </div>
-              </form>
+              ))}
+            </div>
+          ) : (
+            <div className="no-data">
+              <Calendar size={48} className="no-data-icon" />
+              <p>No appointments scheduled for today</p>
             </div>
           )}
-          
-          <div className="tasks-list">
-            {tasks.map(task => (
-              <div key={task.id} className="task-item">
-                <input 
-                  type="checkbox" 
-                  className="task-checkbox" 
-                  onChange={() => handleTaskCheck(task.id)}
-                />
-                <div className="task-content">
-                  <p className="task-title">{task.title}</p>
-                  <p className="task-due">{task.due}</p>
+        </div>
+      </div> */}
+      
+      {/* Recent Appointments */}
+      <div className="dashboard-card">
+        <div className="card-header">
+          <h2>
+            <Clock className="card-header-icon" />
+            Recent Appointments
+          </h2>
+          <Link to="/appointments" className="view-all-link">
+            View all <ChevronRight size={16} />
+          </Link>
+        </div>
+        <div className="card-content">
+          {dashboardData.recent_appointments.length > 0 ? (
+            <div className="recent-appointments">
+              {dashboardData.recent_appointments.map((appointment, index) => (
+                <div className="recent-appointment-item" key={appointment.appointment_id || index}>
+                  <div className="patient-avatar">
+                    {appointment.first_name?.charAt(0)}{appointment.last_name?.charAt(0)}
+                  </div>
+                  <div className="recent-appointment-details">
+                    <h3>{appointment.first_name} {appointment.last_name}</h3>
+                    <div className="appointment-meta">
+                      <span className="appointment-date">
+                        <Calendar size={14} />
+                        {formatDate(appointment.appointment_date)}
+                      </span>
+                      <span className="appointment-time">
+                        <Clock size={14} />
+                        {formatTime(appointment.start_time)}
+                      </span>
+                    </div>
+                    {appointment.appointment_type && (
+                      <span className="appointment-badge">
+                        {appointment.appointment_type}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-            {tasks.length === 0 && (
-              <div className="no-tasks-message">
-                <p>Great job! All tasks are completed.</p>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-data">
+              <User size={48} className="no-data-icon" />
+              <p>No recent appointments found</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

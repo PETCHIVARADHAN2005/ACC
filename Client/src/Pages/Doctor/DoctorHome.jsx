@@ -147,7 +147,7 @@ const DoctorHome = () => {
                 {activeView === 'dashboard' && (
                     <div className="dashboard-card view-card">
                         <div className="card-header">
-                            <h3 className="card-title">Appointments</h3>
+                            <h3 className="card-title">Dashboard</h3>
                         </div>
                         <div className="card-content">
                             <div className="view-content">
