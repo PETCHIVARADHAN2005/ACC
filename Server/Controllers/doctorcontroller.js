@@ -535,6 +535,72 @@ const getDoctorPatients = async (req, res) => {
   }
 };
 
+// const getPatientDetails = async (req, res) => {
+//   try {
+//     const doctor_id = req.doctor_id || req.body.doctor_id;
+//     const patient_id = req.params.patient_id;
+    
+//     console.log(`Fetching details for patient ${patient_id} for doctor ${doctor_id}`);
+    
+//     // First verify this patient has appointments with this doctor
+//     const verifyQuery = `
+//       SELECT COUNT(*) as count 
+//       FROM Appointment 
+//       WHERE doctor_id = ? AND patient_id = ?
+//     `;
+    
+//     const [verification] = await new Promise((resolve, reject) => {
+//       connection.query(verifyQuery, [doctor_id, patient_id], (err, results) => {
+//         if (err) reject(err);
+//         else resolve([results]);
+//       });
+//     });
+    
+//     if (!verification[0] || verification[0].count === 0) {
+//       return res.status(403).json({ message: 'You do not have access to this patient' });
+//     }
+    
+//     // Get patient details
+//     const patientQuery = `SELECT * FROM Patient WHERE patient_id = ?`;
+    
+//     const [patient] = await new Promise((resolve, reject) => {
+//       connection.query(patientQuery, [patient_id], (err, results) => {
+//         if (err) reject(err);
+//         else resolve([results]);
+//       });
+//     });
+    
+//     if (!patient || patient.length === 0) {
+//       return res.status(404).json({ message: 'Patient not found' });
+//     }
+    
+//     // Get patient appointments with this doctor
+//     const appointmentsQuery = `
+//       SELECT * FROM Appointment
+//       WHERE doctor_id = ? AND patient_id = ?
+//       ORDER BY appointment_date DESC, start_time DESC
+//     `;
+    
+//     const [appointments] = await new Promise((resolve, reject) => {
+//       connection.query(appointmentsQuery, [doctor_id, patient_id], (err, results) => {
+//         if (err) reject(err);
+//         else resolve([results]);
+//       });
+//     });
+    
+//     // Combine patient details with appointments
+//     const patientWithAppointments = {
+//       ...patient[0],
+//       appointments: appointments
+//     };
+    
+//     console.log(`Successfully fetched details for patient ${patient_id}`);
+//     res.status(200).json(patientWithAppointments);
+//   } catch (error) {
+//     console.error('Error fetching patient details:', error);
+//     res.status(500).json({ message: 'Failed to fetch patient details' });
+//   }
+// };
 const getPatientDetails = async (req, res) => {
   try {
     const doctor_id = req.doctor_id || req.body.doctor_id;
@@ -544,8 +610,8 @@ const getPatientDetails = async (req, res) => {
     
     // First verify this patient has appointments with this doctor
     const verifyQuery = `
-      SELECT COUNT(*) as count 
-      FROM Appointment 
+      SELECT COUNT(*) as count
+      FROM Appointment
       WHERE doctor_id = ? AND patient_id = ?
     `;
     
@@ -588,19 +654,66 @@ const getPatientDetails = async (req, res) => {
       });
     });
     
-    // Combine patient details with appointments
-    const patientWithAppointments = {
+    // Get patient visit history
+    const visitHistoryQuery = `
+      SELECT * FROM PatientVisits
+      WHERE patient_id = ?
+      ORDER BY date DESC, time DESC
+    `;
+    
+    const [visitHistory] = await new Promise((resolve, reject) => {
+      connection.query(visitHistoryQuery, [patient_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    // Process visit history to parse JSON prescription data
+    const processedVisitHistory = visitHistory.map(visit => {
+      return {
+        ...visit,
+        prescription: visit.prescription ? JSON.parse(visit.prescription) : []
+      };
+    });
+    
+    // Get patient medical history
+    const medicalHistoryQuery = `
+      SELECT * FROM PatientMedicalHistory
+      WHERE patient_id = ?
+      ORDER BY diagnosis_date DESC
+    `;
+    
+    const [medicalHistory] = await new Promise((resolve, reject) => {
+      connection.query(medicalHistoryQuery, [patient_id], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    // Process medical history to parse JSON medications data
+    const processedMedicalHistory = medicalHistory.map(history => {
+      return {
+        ...history,
+        medications: history.medications ? JSON.parse(history.medications) : []
+      };
+    });
+    
+    // Combine patient details with appointments, visit history, and medical history
+    const patientWithDetails = {
       ...patient[0],
-      appointments: appointments
+      appointments: appointments,
+      visitHistory: processedVisitHistory,
+      medicalHistory: processedMedicalHistory
     };
     
     console.log(`Successfully fetched details for patient ${patient_id}`);
-    res.status(200).json(patientWithAppointments);
+    res.status(200).json(patientWithDetails);
   } catch (error) {
     console.error('Error fetching patient details:', error);
     res.status(500).json({ message: 'Failed to fetch patient details' });
   }
 };
+
 const getDoctorDashboard = async (req, res) => {
   try {
     // Get doctor_id from authenticated user
@@ -699,6 +812,228 @@ const getDoctorDashboard = async (req, res) => {
   }
 };
 
+import { v4 as uuidv4 } from 'uuid';
+
+// Save prescription endpoint
+const savePrescription = async (req, res) => {
+  try {
+    const {
+      patientId,
+      date,
+      patientName,
+      bloodPressure,
+      pulseRate,
+      height,
+      weight,
+      medications,
+      pdfData
+    } = req.body;
+    
+    // Get doctor ID from authenticated user or request body
+    const doctor_id = req.body.doctor_id;
+    
+    // Validate required fields
+    if (!patientId || !date) {
+      return res.status(400).json({
+        success: false,
+        message: 'Patient ID and date are required fields'
+      });
+    }
+    
+    // Generate a unique prescription ID
+    const prescription_id = uuidv4();
+    
+    // Filter out empty medication rows
+    const filteredMedications = medications.filter(med => 
+      med.unit && med.drug && med.dosage
+    );
+    
+    // Insert into Prescription table
+    const query = `
+      INSERT INTO Prescription (
+        prescription_id,
+        patient_id,
+        doctor_id,
+        prescription_date,
+        patient_name,
+        blood_pressure,
+        pulse_rate,
+        height,
+        weight,
+        medications,
+        pdf_file,
+        created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+    `;
+    
+    connection.query(
+      query,
+      [
+        prescription_id,
+        patientId,
+        doctor_id,
+        date,
+        patientName,
+        bloodPressure,
+        pulseRate,
+        height,
+        weight,
+        JSON.stringify(filteredMedications),
+        pdfData,
+      ],
+      (err, results) => {
+        if (err) {
+          console.error('Error saving prescription:', err);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to save prescription',
+            error: err.message
+          });
+        }
+        
+        return res.status(201).json({
+          success: true,
+          message: 'Prescription saved successfully',
+          prescription_id: prescription_id
+        });
+      }
+    );
+  } catch (error) {
+    console.error('Error saving prescription:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to save prescription',
+      error: error.message
+    });
+  }
+};
+// Get all prescriptions for a patient
+const getPatientPrescriptions = async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+    const doctorId = req.body.doctor_id;
+    
+    // First verify this doctor has access to this patient
+    const verifyQuery = `
+      SELECT COUNT(*) as count 
+      FROM Appointment 
+      WHERE doctor_id = ? AND patient_id = ?
+    `;
+    
+    const [verification] = await new Promise((resolve, reject) => {
+      connection.query(verifyQuery, [doctorId, patientId], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    if (!verification[0] || verification[0].count === 0) {
+      return res.status(403).json({ 
+        success: false,
+        message: 'You do not have access to this patient' 
+      });
+    }
+    
+    // Get all prescriptions for this patient (without the PDF data to reduce payload size)
+    const query = `
+      SELECT 
+        prescription_id, 
+        patient_id, 
+        doctor_id, 
+        prescription_date, 
+        patient_name,
+        blood_pressure,
+        pulse_rate,
+        height,
+        weight,
+        medications,
+        created_at
+      FROM Prescription
+      WHERE patient_id = ?
+      ORDER BY prescription_date DESC, created_at DESC
+    `;
+    
+    const [prescriptions] = await new Promise((resolve, reject) => {
+      connection.query(query, [patientId], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    res.status(200).json({
+      success: true,
+      prescriptions: prescriptions || []
+    });
+    
+  } catch (error) {
+    console.error("Error fetching patient prescriptions:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch prescriptions",
+      error: error.message
+    });
+  }
+};
+
+// Get a specific prescription with PDF data
+const getPrescriptionWithPDF = async (req, res) => {
+  try {
+    const prescriptionId = req.params.prescriptionId;
+    const doctorId = req.body.doctor_id;
+    
+    // Verify this doctor has access to this prescription
+    const verifyQuery = `
+      SELECT p.*, a.doctor_id as appointment_doctor_id
+      FROM Prescription p
+      LEFT JOIN Appointment a ON p.patient_id = a.patient_id AND a.doctor_id = ?
+      WHERE p.prescription_id = ?
+      LIMIT 1
+    `;
+    
+    const [prescription] = await new Promise((resolve, reject) => {
+      connection.query(verifyQuery, [doctorId, prescriptionId], (err, results) => {
+        if (err) reject(err);
+        else resolve([results]);
+      });
+    });
+    
+    if (!prescription || prescription.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Prescription not found" 
+      });
+    }
+    
+    // Check if this doctor has access to this patient or is the author of the prescription
+    if (prescription[0].doctor_id !== doctorId && !prescription[0].appointment_doctor_id) {
+      return res.status(403).json({
+        success: false,
+        message: "You don't have access to this prescription"
+      });
+    }
+    
+    // Return the prescription with PDF data
+    res.status(200).json({
+      success: true,
+      prescription: prescription[0]
+    });
+    
+  } catch (error) {
+    console.error("Error fetching prescription:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch prescription",
+      error: error.message
+    });
+  }
+};
+
+// Don't forget to export these functions
+export { 
+  // ... existing exports
+  getPatientPrescriptions,
+  getPrescriptionWithPDF 
+};
 
 
-export { loginDoctor, getDoctorProfile, addQualification, updateQualification, addSpecialization, updateSpecialization, addExperience, updateExperience, addRegistration, updateRegistration,updatePersonal,deleteExperience,deleteQualification,deleteSpecialization,addSlot,deleteSlot,updateSlot,getSlotsByDoctor,getDoctorPatients,getPatientDetails,getDoctorDashboard};
+export { loginDoctor, getDoctorProfile, addQualification, updateQualification, addSpecialization, updateSpecialization, addExperience, updateExperience, addRegistration, updateRegistration,updatePersonal,deleteExperience,deleteQualification,deleteSpecialization,addSlot,deleteSlot,updateSlot,getSlotsByDoctor,getDoctorPatients,getPatientDetails,getDoctorDashboard,savePrescription};

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { DoctorContext } from '../../context/Doctorcontext';
-import { 
-  FaSearch, FaUserInjured, FaPhoneAlt, FaEnvelope, 
-  FaArrowLeft, FaUser, FaCalendarAlt, FaMapMarkerAlt, 
+import {
+  FaSearch, FaUserInjured, FaPhoneAlt, FaEnvelope,
+  FaArrowLeft, FaUser, FaCalendarAlt, FaMapMarkerAlt,
   FaNotesMedical, FaFileMedical, FaHistory, FaClock
 } from 'react-icons/fa';
 import '../../styles/PatientRecord.css';
+
 const PatientRecord = () => {
   const { backendUrl, token } = useContext(DoctorContext);
   const [patients, setPatients] = useState([]);
@@ -124,7 +125,6 @@ const PatientRecord = () => {
         </div>
       );
     }
-
     if (!patientDetails) {
       return (
         <div className="error-container">
@@ -137,7 +137,6 @@ const PatientRecord = () => {
         </div>
       );
     }
-
     return (
       <div className="patient-details-container">
         <div className="patient-details-header">
@@ -153,28 +152,26 @@ const PatientRecord = () => {
             </span>
           </h1>
         </div>
-
         <div className="patient-tabs">
-          <button 
+          <button
             className={`tab-button ${activeTab === 'info' ? 'active' : ''}`}
             onClick={() => setActiveTab('info')}
           >
             <FaUser /> Basic Info
           </button>
-          <button 
+          <button
             className={`tab-button ${activeTab === 'medical' ? 'active' : ''}`}
             onClick={() => setActiveTab('medical')}
           >
             <FaNotesMedical /> Medical History
           </button>
-          <button 
+          <button
             className={`tab-button ${activeTab === 'visits' ? 'active' : ''}`}
             onClick={() => setActiveTab('visits')}
           >
             <FaHistory /> Visit History
           </button>
         </div>
-
         <div className="patient-details-content">
           {activeTab === 'info' && (
             <div className="patient-info-section">
@@ -205,7 +202,6 @@ const PatientRecord = () => {
                   </div>
                 </div>
               </div>
-
               <div className="info-card">
                 <h3><FaPhoneAlt className="card-icon" /> Contact Information</h3>
                 <div className="info-grid">
@@ -227,7 +223,6 @@ const PatientRecord = () => {
                   )}
                 </div>
               </div>
-
               {patientDetails.address && (
                 <div className="info-card">
                   <h3><FaMapMarkerAlt className="card-icon" /> Address</h3>
@@ -240,12 +235,11 @@ const PatientRecord = () => {
               )}
             </div>
           )}
-
           {activeTab === 'medical' && (
             <div className="patient-medical-section">
-              {patientDetails.medical_history && patientDetails.medical_history.length > 0 ? (
+              {patientDetails.medicalHistory && patientDetails.medicalHistory.length > 0 ? (
                 <div className="medical-history-list">
-                  {patientDetails.medical_history.map((record, index) => (
+                  {patientDetails.medicalHistory.map((record, index) => (
                     <div className="medical-record-card" key={index}>
                       <div className="record-header">
                         <h3>{record.condition}</h3>
@@ -276,12 +270,11 @@ const PatientRecord = () => {
               )}
             </div>
           )}
-
           {activeTab === 'visits' && (
             <div className="patient-visits-section">
-              {patientDetails.visits && patientDetails.visits.length > 0 ? (
+              {patientDetails.visitHistory && patientDetails.visitHistory.length > 0 ? (
                 <div className="visits-timeline">
-                  {patientDetails.visits.map((visit, index) => (
+                  {patientDetails.visitHistory.map((visit, index) => (
                     <div className="visit-card" key={index}>
                       <div className="visit-date">
                         <FaCalendarAlt className="visit-icon" />
@@ -349,7 +342,6 @@ const PatientRecord = () => {
           </div>
         </div>
       </div>
-
       {filteredPatients.length === 0 ? (
         <div className="no-patients">
           <div className="no-data-icon">👨‍⚕️</div>
@@ -380,7 +372,7 @@ const PatientRecord = () => {
                 )}
               </div>
               <div className="patient-action">
-                <button 
+                <button
                   className="view-details-btn"
                   onClick={() => handleViewDetails(patient.patient_id)}
                 >

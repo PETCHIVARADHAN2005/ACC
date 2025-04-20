@@ -1,100 +1,131 @@
 .doctor-manage-slots {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 25px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.doctor-manage-slots:hover {
+  box-shadow: 0 15px 35px rgba(52, 152, 219, 0.1);
 }
 
 .doctor-manage-slots h1 {
   color: #2c3e50;
-  margin-bottom: 25px;
-  font-size: 28px;
+  margin-bottom: 30px;
+  font-size: 32px;
   text-align: center;
   position: relative;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .doctor-manage-slots h1:after {
   content: '';
   position: absolute;
-  width: 60px;
-  height: 3px;
-  background-color: #3498db;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #3498db, #2ecc71);
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+  border-radius: 2px;
 }
 
 .doctor-slot-form {
   display: flex;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 15px;
+  margin-bottom: 35px;
   flex-wrap: wrap;
-  padding: 20px;
+  padding: 25px;
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(52, 152, 219, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.doctor-slot-form:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .doctor-slot-form input {
   flex: 1;
   min-width: 120px;
-  padding: 12px 15px;
+  padding: 14px 18px;
   border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 15px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .doctor-slot-form input:focus {
   border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
   outline: none;
+  transform: scale(1.02);
 }
 
 .doctor-slot-form button {
-  padding: 12px 20px;
-  background-color: #3498db;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
-  min-width: 100px;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
 }
 
 .doctor-slot-form button:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
 }
 
 .doctor-slot-form button:active {
   transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
 }
 
 .doctor-cancel {
-  background-color: #e74c3c !important;
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2) !important;
 }
 
 .doctor-cancel:hover {
-  background-color: #c0392b !important;
+  background: linear-gradient(135deg, #c0392b, #e74c3c) !important;
+  box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3) !important;
 }
 
 .doctor-error {
   color: #e74c3c;
   background-color: #fdeaea;
-  padding: 12px 15px;
-  border-radius: 6px;
-  margin-bottom: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
   font-size: 15px;
-  border-left: 4px solid #e74c3c;
+  border-left: 5px solid #e74c3c;
+  box-shadow: 0 3px 10px rgba(231, 76, 60, 0.1);
+  animation: errorPulse 2s infinite;
+}
+
+@keyframes errorPulse {
+  0% { box-shadow: 0 3px 10px rgba(231, 76, 60, 0.1); }
+  50% { box-shadow: 0 3px 15px rgba(231, 76, 60, 0.2); }
+  100% { box-shadow: 0 3px 10px rgba(231, 76, 60, 0.1); }
 }
 
 .doctor-slots-container {
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 .doctor-slots-table {
@@ -102,36 +133,47 @@
   border-collapse: separate;
   border-spacing: 0;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.doctor-slots-table:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
 .doctor-slots-table th,
 .doctor-slots-table td {
-  padding: 15px;
+  padding: 18px;
   text-align: left;
 }
 
 .doctor-slots-table th {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   font-weight: 600;
   text-transform: uppercase;
   font-size: 14px;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .doctor-slots-table tr:nth-child(even) {
   background-color: #f5f9fc;
 }
 
+.doctor-slots-table tr {
+  transition: all 0.2s ease;
+}
+
 .doctor-slots-table tr:hover {
-  background-color: #ecf0f1;
+  background-color: #e8f4fc;
+  transform: scale(1.01);
 }
 
 .doctor-slots-table td {
   border-bottom: 1px solid #ecf0f1;
+  transition: all 0.2s ease;
 }
 
 .doctor-slots-table tr:last-child td {
@@ -139,57 +181,68 @@
 }
 
 .doctor-edit {
-  background-color: #2ecc71;
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border: none;
-  padding: 8px 12px;
-  margin-right: 8px;
-  border-radius: 4px;
+  padding: 10px 16px;
+  margin-right: 10px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(52, 152, 219, 0.2);
 }
 
 .doctor-edit:hover {
-  background-color: #27ae60;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 12px rgba(52, 152, 219, 0.3);
 }
 
 .doctor-delete {
-  background-color: #e74c3c;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
   border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 10px 16px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(231, 76, 60, 0.2);
 }
 
 .doctor-delete:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 12px rgba(231, 76, 60, 0.3);
 }
 
 .no-slots-message {
   text-align: center;
-  padding: 30px;
+  padding: 40px;
   color: #7f8c8d;
   font-style: italic;
   background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 20px;
+  border-radius: 12px;
+  margin-top: 25px;
+  border: 1px dashed #bdc3c7;
+  transition: all 0.3s ease;
+}
+
+.no-slots-message:hover {
+  background-color: #f0f4f7;
+  border-color: #95a5a6;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
   .doctor-manage-slots {
-    padding: 15px;
+    padding: 20px;
   }
   
   .doctor-slot-form {
-    padding: 15px;
-    gap: 10px;
+    padding: 20px;
+    gap: 12px;
   }
   
   .doctor-slot-form input {
@@ -203,7 +256,7 @@
 
 @media (max-width: 600px) {
   .doctor-manage-slots h1 {
-    font-size: 24px;
+    font-size: 26px;
   }
   
   .doctor-slots-table thead {
@@ -219,16 +272,16 @@
   }
   
   .doctor-slots-table tr {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   }
   
   .doctor-slots-table td {
     text-align: right;
-    padding: 12px 15px;
+    padding: 15px 18px;
     position: relative;
     border-bottom: 1px solid #ecf0f1;
   }
@@ -238,29 +291,53 @@
     background-color: #f9f9f9;
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 12px;
   }
   
   .doctor-slots-table td::before {
     content: attr(data-label);
     position: absolute;
-    left: 15px;
+    left: 18px;
     font-weight: 600;
     color: #2c3e50;
   }
   
   .doctor-edit, .doctor-delete {
-    padding: 8px 15px;
+    padding: 10px 18px;
     font-size: 14px;
   }
 }
 
 /* Animation for new/updated slots */
 @keyframes highlightNew {
-  0% { background-color: rgba(46, 204, 113, 0.2); }
+  0% { background-color: rgba(46, 204, 113, 0.3); }
+  50% { background-color: rgba(46, 204, 113, 0.15); }
   100% { background-color: transparent; }
 }
 
 .highlight-new {
-  animation: highlightNew 2s ease-out;
+  animation: highlightNew 2.5s ease-out;
+}
+
+/* Add a subtle loading animation */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
 }

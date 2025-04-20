@@ -290,14 +290,14 @@ const DoctorAppointment = () => {
             </div>
           </div>
           
-          <div className="info-card actions-card">
+          {/* <div className="info-card actions-card">
             <h3>Actions</h3>
             <div className="patient-actions">
               <button className="action-button primary">Schedule Appointment</button>
               <button className="action-button secondary">View Medical Records</button>
               <button className="action-button tertiary">Send Message</button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );

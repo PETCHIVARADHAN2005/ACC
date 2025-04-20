@@ -224,3 +224,11 @@
     background-color: #6c757d;
     color: white;
   }
+  .col-food {
+    width: 120px;
+  }
+  
+  .medications-table th, .medications-table td {
+    padding: 8px 4px;
+    vertical-align: middle;
+  }

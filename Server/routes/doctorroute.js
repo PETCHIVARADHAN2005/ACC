@@ -1,5 +1,5 @@
 import express from 'express';
-import { addExperience, addQualification, addRegistration, addSlot, addSpecialization, deleteExperience, deleteQualification, deleteSlot, deleteSpecialization, getDoctorDashboard, getDoctorPatients, getDoctorProfile, getPatientDetails, getSlotsByDoctor, loginDoctor, updateExperience, updatePersonal, updateQualification, updateRegistration, updateSlot, updateSpecialization } from '../Controllers/doctorcontroller.js'; 
+import { addExperience, addQualification, addRegistration, addSlot, addSpecialization, deleteExperience, deleteQualification, deleteSlot, deleteSpecialization, getDoctorDashboard, getDoctorPatients, getDoctorProfile, getPatientDetails, getPatientPrescriptions, getPrescriptionWithPDF, getSlotsByDoctor, loginDoctor, savePrescription, updateExperience, updatePersonal, updateQualification, updateRegistration, updateSlot, updateSpecialization } from '../Controllers/doctorcontroller.js'; 
 import authdoctor from '../Middlewares/authDoctor.js';
 import upload from '../Middlewares/multer.js';
 const doctorrouter=express.Router();
@@ -24,4 +24,9 @@ doctorrouter.delete('/delete-slot/:slotId', authdoctor, deleteSlot);
 doctorrouter.get('/get-patients', authdoctor, getDoctorPatients);
 doctorrouter.get('/get-patient-details/:patient_id', authdoctor, getPatientDetails);
 doctorrouter.get('/get-doctor-dashboard', authdoctor, getDoctorDashboard);
+doctorrouter.post('/save-prescription', authdoctor, savePrescription);
+// Add these routes to your doctor routes file
+doctorrouter.get('/patients/:patientId/prescriptions', authdoctor, getPatientPrescriptions);
+doctorrouter.get('/prescriptions/:prescriptionId', authdoctor, getPrescriptionWithPDF);
+
 export default doctorrouter;

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { DoctorContext } from '../../context/Doctorcontext';
 import DigitalPrescription from './DigitalPrescription';
 import DoctorDashboard from './DoctorDashboard';
+import PatientPrescriptionViewer from './Prescriptionviewer';
  // Assuming you're using lucide-react for icons
 
 // Inside your component:
@@ -53,6 +54,7 @@ const DoctorHome = () => {
         { id: 'patients', label: 'Patients', icon: <Users className="menu-icon" /> },
         { id: 'prescriptions', label: 'Digital Prescription', icon: <FileText className="menu-icon" /> },
         { id: 'slots', label: 'Manage Slots', icon: <Clock className="menu-icon" /> },
+        { id: 'prescriptionviewer', label: 'Prescription Viewer', icon: <FileText className="menu-icon" /> }
     ];
 
     const getDaysInMonth = (date) => {
@@ -201,6 +203,16 @@ const DoctorHome = () => {
                         </div>
                         <div className="card-content">
                             <ManageSlots/>
+                        </div>
+                    </div>
+                )}
+                {activeView === 'prescriptionviewer' && (
+                    <div className="dashboard-card view-card">
+                        <div className="card-header">
+                            <h3 className="card-title">Prescripiton</h3>
+                        </div>
+                        <div className="card-content">
+                            <PatientPrescriptionViewer/>
                         </div>
                     </div>
                 )}

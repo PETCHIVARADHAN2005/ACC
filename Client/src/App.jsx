@@ -7,6 +7,7 @@ import DoctorAppointment from './Pages/Doctor/DoctorAppointment'
 import PatientRecord from './Pages/Doctor/PatientRecord'
 import DoctorSlots from './Pages/Doctor/DoctorSlots'
 import DoctorContextProvider, { DoctorContext } from './context/Doctorcontext'
+import PatientPrescriptionViewer from './Pages/Doctor/Prescriptionviewer'
 // import './App.css';
 // import AddDoctor from './Pages/Admin/AddDoctor';
 // import AdminPage from './Pages/Admin/AdminPage';
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/appointments' element={<DoctorAppointment/>}/>
         <Route path='/patients-record' element={<PatientRecord/>}/>
         <Route path='/doctor-slots' element={<DoctorSlots/>}/>
+        <Route path='/Prescription-viewer' element={<PatientPrescriptionViewer/>}/>
       </Routes>
       </DoctorContextProvider>
       

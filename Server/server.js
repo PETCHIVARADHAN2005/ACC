@@ -8,8 +8,9 @@ import Patientrouter from './routes/Patientroute.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+// app.use(express.json());
 app.use(cors());
 connectCloudinary();
 // Middleware to attach db connection to request object
